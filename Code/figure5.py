@@ -30,7 +30,7 @@ for i in range(PREC_ALPHA):
     theoretical_sol[:, i] = res_function(MU, x[i], RHO)
 
 # Compute the empirical solutions:
-N_SIZE = 500  # dimension of the matrix for the theoretical solution.
+N_SIZE = 100  # dimension of the matrix for the theoretical solution.
 emp_sol = np.zeros((PREC_ALPHA, 3))
 for i in range(PREC_ALPHA):
     alpha = x[i]

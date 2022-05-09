@@ -8,7 +8,7 @@
 import numpy as np
 from lemkelcp import lemkelcp
 from scipy import optimize
-import scipy.stats as stats
+from scipy import stats
 
 # %%
 
@@ -39,7 +39,7 @@ def elliptic_normal_matrix(n=10, rho=0):
 
     for i in range(n):
         for j in range(i+1):
-            if (j == i):
+            if j == i:
                 A[i, j] = np.random.randn()
             else:
                 x = np.random.multivariate_normal(mean, cov, 1)
@@ -80,7 +80,7 @@ def elliptic_normal_matrix_opti(n=100, rho=0):
 
 def correlated_normal_matrix(n=10, rho_matrix=np.zeros((10, 10))):
     """
-    Create a elliptic random matrix of size (n,n) with a correlation 
+    Create a elliptic random matrix of size (n,n) with a correlation
     profile of size (n,n)
 
     Parameters
@@ -102,7 +102,7 @@ def correlated_normal_matrix(n=10, rho_matrix=np.zeros((10, 10))):
 
     for i in range(n):
         for j in range(i+1):
-            if (j == i):
+            if j == i:
                 A[i, j] = np.random.randn()
             else:
                 cov = [[1, rho_matrix[i, j]], [rho_matrix[i, j], 1]]
@@ -134,7 +134,7 @@ def f_LV(x, A):
     """
     N = len(A)
     x = np.dot(np.diag(x), (np.ones(N)-x-np.dot(A, x)))
-    return(x)
+    return x
 
 
 def dynamics_LV(A, x_init, nbr_it, tau):
@@ -166,7 +166,7 @@ def dynamics_LV(A, x_init, nbr_it, tau):
     sol_dyn = np.eye(len(A), nbr_it)
 
     # RK scheme:
-    while (compt < nbr_it):
+    while compt < nbr_it:
 
         f1 = f_LV(x, A)
         f2 = f_LV(x+tau*0.5*f1, A)
@@ -191,7 +191,24 @@ def dynamics_LV(A, x_init, nbr_it, tau):
 # of the fixed point problem with vanishing species.
 
 def e_cond(delta):
+    """
+    This function is dependent from the gamma function.
 
+    Conditional mean of the normal distribution.
+    See the article for more informations.
+
+
+    Parameters
+    ----------
+    delta : float
+        Specific parameter of the system.
+
+    Returns
+    -------
+    float
+        Conditional mean associated to the system.
+
+    """
     p_1 = np.exp(-delta**2/2)
     p_2 = 1-stats.norm.cdf(-delta)
 
@@ -199,6 +216,24 @@ def e_cond(delta):
 
 
 def e2_cond(delta):
+    """
+    This function is dependent from the gamma function.
+
+    Conditional mean of the square of the normal distribution.
+    See the article for more informations.
+
+
+    Parameters
+    ----------
+    delta : float
+        Specific parameter of the system.
+
+    Returns
+    -------
+    float
+        Conditional mean associated to the system.
+
+    """
     p_1 = np.exp(-delta**2/2)
     p_2 = 1-stats.norm.cdf(-delta)
 
@@ -206,6 +241,32 @@ def e2_cond(delta):
 
 
 def sys_1(v, m, sigma, phi, mu, alpha, rho):
+    """
+    Equation (1) associated to the persistent species.
+
+    Parameters
+    ----------
+    v : float
+        Specitic parameter of the dynamical cavity method.
+    m : float
+        Mean of the persistent species.
+    sigma : float
+        Root square mean of the persistent species.
+    phi : float
+        Proportion of persistent species.
+    mu : float
+        Parameter of the model - Interaction drift.
+    alpha : float
+        Parameter of the model - Interaction strength.
+    rho: float
+        Parameter of the model - Interaction correlation.
+
+    Returns
+    -------
+    float
+        Fixed point equation (1).
+
+    """
 
     delta = (1+m*mu)*alpha/sigma
 
@@ -213,6 +274,32 @@ def sys_1(v, m, sigma, phi, mu, alpha, rho):
 
 
 def sys_2(v, m, sigma, phi, mu, alpha, rho):
+    """
+    Equation (2) associated to the persistent species.
+
+    Parameters
+    ----------
+    v : float
+        Specitic parameter of the dynamical cavity method.
+    m : float
+        Mean of the persistent species.
+    sigma : float
+        Root square mean of the persistent species.
+    phi : float
+        Proportion of persistent species.
+    mu : float
+        Parameter of the model - Interaction drift.
+    alpha : float
+        Parameter of the model - Interaction strength.
+    rho: float
+        Parameter of the model - Interaction correlation.
+
+    Returns
+    -------
+    float
+        Fixed point equation (2).
+
+    """
 
     delta = (1+m*mu)*alpha/sigma
 
@@ -222,6 +309,32 @@ def sys_2(v, m, sigma, phi, mu, alpha, rho):
 
 
 def sys_3(v, m, sigma, phi, mu, alpha, rho):
+    """
+    Equation (3) associated to the persistent species.
+
+    Parameters
+    ----------
+    v : float
+        Specitic parameter of the dynamical cavity method.
+    m : float
+        Mean of the persistent species.
+    sigma : float
+        Root square mean of the persistent species.
+    phi : float
+        Proportion of persistent species.
+    mu : float
+        Parameter of the model - Interaction drift.
+    alpha : float
+        Parameter of the model - Interaction strength.
+    rho: float
+        Parameter of the model - Interaction correlation.
+
+    Returns
+    -------
+    float
+        Fixed point equation (3).
+
+    """
 
     delta = (1+m*mu)*alpha/sigma
 
@@ -237,9 +350,34 @@ def sys_3(v, m, sigma, phi, mu, alpha, rho):
 
 
 def sys_4(v, m, sigma, phi, mu, alpha, rho):
+    """
+    Equation (4) associated to the persistent species.
+
+    Parameters
+    ----------
+    v : float
+        Specitic parameter of the dynamical cavity method.
+    m : float
+        Mean of the persistent species.
+    sigma : float
+        Root square mean of the persistent species.
+    phi : float
+        Proportion of persistent species.
+    mu : float
+        Parameter of the model - Interaction drift.
+    alpha : float
+        Parameter of the model - Interaction strength.
+    rho: float
+        Parameter of the model - Interaction correlation.
+
+    Returns
+    -------
+    float
+        Fixed point equation (4).
+
+    """
 
     coef1 = 1/(alpha-rho*v)
-
     return phi*coef1-v
 
 
@@ -249,14 +387,21 @@ def Gamma(x, mu, alpha, rho):
 
     Parameters
     ----------
-    x : x[O] correspond à sigma
-        x[1] correspond à pi
-    alpha : TYPE
-        DESCRIPTION.
+    x : list
+        x[O] correspond to v
+        x[1] correspond to m
+        x[2] correspond to sigma
+        x[3] correspond to phi
+    mu : float
+        Parameter of the model - Interaction drift.
+    alpha : float
+        Parameter of the model - Interaction strength.
+    rho: float
+        Parameter of the model - Interaction correlation.
 
     Returns
     -------
-    None.
+    Fixed point equations.
 
     """
 
@@ -265,20 +410,33 @@ def Gamma(x, mu, alpha, rho):
 
 def res_function(mu, alpha, rho):
     """
+    Resolution and solution of the system gamma.
+    To resolve the system, we use the python package optimize.root.
+
+    Important remark:
+    If you have problems with precision when obtaining figures,
+    you probably need to manage the settings of the fixed point resolution.
 
 
     Parameters
     ----------
-    mu : TYPE
-        DESCRIPTION.
-    Sig : TYPE
-        DESCRIPTION.
-    Beta : TYPE
-        DESCRIPTION.
+    mu : float
+        Parameter of the model - Interaction drift.
+    alpha : float
+        Parameter of the model - Interaction strength.
+    rho: float
+        Parameter of the model - Interaction correlation.
 
     Returns
     -------
-    None.
+    v : float
+        Specitic parameter of the dynamical cavity method.
+    m : float
+        Mean of the persistent species.
+    sigma : float
+        Root square mean of the persistent species.
+    phi : float
+        Proportion of persistent species.
 
     """
 
@@ -294,34 +452,33 @@ def res_function(mu, alpha, rho):
 # of the fixed point problem with vanishing species.
 
 
-def zero_LCP(N, A):
+def zero_LCP(A):
     """
     This function resolve the LCP problem of our model.
-    If a solution exist, this function return the properties 
+    If a solution exist, this function return the properties
     of the solution i.e:
     - proportion of persistent species,
     - variance of the persistent species,
-    - mean of the persistent species. 
+    - mean of the persistent species.
 
     Parameters
     ----------
-    N : int
-        Correspond to the size of the population/matrix A.
-    A : Matrice de taille (N,N)
-        Correspond à la matrice ces intéractions.
+    A : numpy.ndarray(n,n),
+        Corresponds to the matrix of interactions.
 
     Returns
     -------
-    Si la solution existe, cette fonction renvoie 
-    le nombre d'espèces persistantes. (En pourcentage)
-    - I/N
-    L'espérance des abondances x_i !=0 du LCP
-    - m_i_chap
+    If this solution exists, the function return: (En pourcentage)
+    I/N : Proportion of surviving species.
+
+    m : Mean of the surviving species.
+
+    sigma: Root mean square of the surviving species.
 
     """
-
-    q = np.ones(N)
-    M = -np.eye(N)+A
+    A_SIZE = A.shape[0]
+    q = np.ones(A_SIZE)
+    M = -np.eye(A_SIZE)+A
     sol = lemkelcp.lemkelcp(-M, -q, maxIter=10000)
 
     res_LCP = sol[0]
@@ -329,19 +486,48 @@ def zero_LCP(N, A):
     res_LCP_pos = res_LCP[res_LCP != 0]
     I = len(res_LCP_pos)
 
-    m = sum(res_LCP_pos)/N
-    sigma = np.sqrt(sum(res_LCP**2)/N)
-    return (I/N, m, sigma)
+    m = sum(res_LCP_pos)/A_SIZE
+    sigma = np.sqrt(sum(res_LCP_pos**2)/A_SIZE)
+    return (I/A_SIZE, m, sigma)
 
 
-def empirical_prop(n, alpha, mu, rho, mc_prec=100):
+def empirical_prop(n=200, alpha=2, mu=0, rho=0, mc_prec=100):
+    """
+    For a large number of matrix (mc_prec) of size (B_size), an empirical
+    estimator of the parameter are given using a MC experiment.
 
+
+    Parameters
+    ----------
+    B_size : int, optional
+        Dimension of the model. The default is 200.
+    alpha : float, optional
+        Parameter of the model - Interaction strength. The default is 2.
+    mu : float, optional
+        Parameter of the model - Interaction drift. The default is 0.
+    rho: float, optional
+        Parameter of the model - Interaction correlation. The default is 0.
+    mc_prec : int, optional
+        Precision of the MC experiment. The default is 100.
+
+    Returns
+    -------
+    np.mean(S_p) : float,
+        Proportion of surviving species estimator.
+
+    np.mean(S_m) : float,
+        Mean of the surviving species estimator.
+
+    np.mean(S_sigma) : float,
+        Root mean square of the surviving species estimator.
+
+    """
     S_p = np.zeros(mc_prec)
     S_sigma = np.zeros(mc_prec)
     S_m = np.zeros(mc_prec)
 
     for i in range(mc_prec):
         A = elliptic_normal_matrix_opti(n, rho)/(np.sqrt(n)*alpha)+mu/n
-        (S_p[i], S_m[i], S_sigma[i]) = zero_LCP(len(A), A)
+        (S_p[i], S_m[i], S_sigma[i]) = zero_LCP(A)
 
     return np.mean(S_p), np.mean(S_m), np.mean(S_sigma)

@@ -15,7 +15,7 @@ from functions import elliptic_normal_matrix_opti
 # %%
 
 # Set the parameters:
-MC_PREC = 100  # number of MC experiments
+MC_PREC = 1000  # number of MC experiments
 SIZE_SAMPLE = 40  # definition of the size of the sample
 # We introduce the interval of Kappa we want to study.
 ind = np.linspace(0.75, 2, SIZE_SAMPLE)
@@ -25,7 +25,7 @@ rho_index = np.array([-0.5, 0, 0.5])
 NBR_RHO_IT = 3
 
 # Dimension of the matrix:
-n = 100
+n = 1000
 
 # Storage matrix of the number of feasible solution:
 res_hat = np.eye(NBR_RHO_IT, SIZE_SAMPLE)

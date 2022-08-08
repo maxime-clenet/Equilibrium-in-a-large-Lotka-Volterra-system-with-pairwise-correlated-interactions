@@ -17,7 +17,7 @@ from scipy import stats
 
 def elliptic_normal_matrix(n=10, rho=0):
     """
-    Create a elliptic random matrix of size (n,n) with correlation term rho.
+    Create a elliptic Gaussian random matrix of size (n,n) with correlation term rho.
 
     Parameters
     ----------
@@ -52,7 +52,7 @@ def elliptic_normal_matrix_opti(n=100, rho=0):
     """
     Same function as elliptic_normal_matrix but with optimal generation.
 
-    Create a elliptic random matrix of size (n,n) with correlation term rho.
+    Create a elliptic Gaussian random matrix of size (n,n) with correlation term rho.
 
     Parameters
     ----------
@@ -80,7 +80,7 @@ def elliptic_normal_matrix_opti(n=100, rho=0):
 
 def correlated_normal_matrix(n=10, rho_matrix=np.zeros((10, 10))):
     """
-    Create a elliptic random matrix of size (n,n) with a correlation
+    Create a elliptic Gaussian random matrix of size (n,n) with a correlation
     profile of size (n,n)
 
     Parameters
@@ -112,9 +112,117 @@ def correlated_normal_matrix(n=10, rho_matrix=np.zeros((10, 10))):
     return A
 
 
+def pair(u, a):
+    """
+    Function associated to uniform_normal_matrix.
+
+    Parameters
+    ----------
+    u : float
+        DESCRIPTION.
+    a : float
+        DESCRIPTION.
+
+    Returns
+    -------
+    float
+        Return the correlated pair of the uniform distribution.
+
+    """
+
+    if u > a:
+        return np.sqrt(3)+a-u
+    else:
+        return u
+
+
+def uniform_normal_matrix(n=10, cor=0):
+    """
+    Create a elliptic Uniform random matrix of size (n,n) with correlation term rho.
+
+    Parameters
+    ----------
+    n : int, optional
+        Dimension of the matrix. The default is 10.
+    cor : float [-sqrt(3),sqrt(3)], optional
+        Correlation term != from rho. The default is 0. 
+
+    Returns
+    -------
+    A : numpy.ndarray(n,n)
+        Matrix of interactions.
+
+    """
+    A = np.zeros((n, n))
+
+    for i in range(n):
+        for j in range(i+1):
+            if j == i:
+                A[i, j] = np.random.random()*2*np.sqrt(3)-np.sqrt(3)
+            else:
+                A[i, j] = np.random.random()*2*np.sqrt(3)-np.sqrt(3)
+                A[j, i] = pair(A[i, j], cor)
+    return A
+
+
+def V(U, a):
+    """
+    Associated to the function uniform_normal_matrix_opti.
+
+    Parameters
+    ----------
+    U : numpy.ndarray
+        Vector of random variables of uniform distribution.
+    a : float
+        Parameter associated to the correlation term rho.
+
+    Returns
+    -------
+    v : numpy.ndarray
+        Vector of random variables of uniform distribution correlated
+        with U.
+
+    """
+    v = np.zeros(len(U))
+    v = U.copy()
+    for i, value in enumerate(U):
+        if value > a:
+            v[i] = np.sqrt(3)+a-value
+    return v
+
+
+def uniform_normal_matrix_opti(n=100, cor=0):
+    """
+    Same as uniform normal matrix but with optimal generation.
+
+
+    Create a elliptic Uniform random matrix of size (n,n) with correlation term rho.
+
+    Parameters
+    ----------
+    n : int, optional
+        Dimension of the matrix. The default is 10.
+    cor : float [-sqrt(3),sqrt(3)], optional
+        Correlation term != from rho. The default is 0. 
+
+    Returns
+    -------
+    A : numpy.ndarray(n,n)
+        Matrix of interactions.
+
+    """
+
+    A = np.diag(np.random.random(n)*2*np.sqrt(3)-np.sqrt(3))
+    B = np.zeros((n, n))
+    x = np.random.random(int(n*(n-1)/2))*2*np.sqrt(3)-np.sqrt(3)
+    A[np.triu_indices(n, 1)] = x
+    B[np.triu_indices(n, 1)] = V(x, cor)
+    return A+B.T
+
 # %%
 
 # Function associated with the Lotka-Volterra dynamics
+
 
 def f_LV(x, A):
     """
